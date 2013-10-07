@@ -1,0 +1,337 @@
+body {
+  padding-top: 20px;
+  padding-bottom: 40px;
+}
+
+
+/* Custom container */
+.container-narrow {
+  margin: 0 auto;
+  max-width: 960px;
+}
+.container-narrow > hr {
+  margin: 30px 0;
+}
+
+
+ul {
+  list-style: none;  
+}
+
+/*this class is not/shall not be used*/
+/*
+.error
+{
+  color: red;
+  font-weight: bold;
+}
+*/
+
+/*
+.project_summary {
+  padding-bottom: 20px;
+  padding-top: 10px;
+}
+*/
+
+/*
+h4.inline
+{
+  display: inline;
+}
+*/
+
+.project_list > li > /*.project_summary > */ ul > lh
+{
+  font-weight: bold;
+}
+
+.project_list h4
+{
+  margin-top: 0;
+}
+
+h1 a,
+h1 a:hover,
+h1 a:visited,
+h4 a,
+h4 a:hover,
+h4 a:visited
+{
+    text-decoration: none;
+    color: inherit;
+}
+
+.search-form
+{
+  text-align: right;
+  /* margin: 0; */
+}
+
+/*
+.search-form input[type="text"]
+{
+  margin-bottom: 0;
+}
+*/
+
+.right-text
+{
+  text-align: right;
+}
+
+.center-text
+{
+  text-align: center;  
+}
+
+.form-signin {
+  max-width: 300px;
+  padding: 19px 29px 29px;
+  /* margin: 0 auto 20px; */
+  background-color: #fff;
+  border: 1px solid #e5e5e5;
+  -webkit-border-radius: 5px;
+     -moz-border-radius: 5px;
+          border-radius: 5px;
+  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+     -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+          box-shadow: 0 1px 2px rgba(0,0,0,.05);
+}
+
+.form-register {
+  max-width: 300px;
+  padding: 19px 29px 29px;
+  /* margin: 0 auto 20px; */
+  background-color: #fff;
+}
+
+/*
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+  margin-bottom: 10px;
+}
+*/
+/*
+.form-signin input[type="text"],
+.form-signin input[type="password"] {
+  font-size: 16px;
+  height: auto;
+  margin-bottom: 15px;
+  padding: 7px 9px;
+}
+*/
+
+/*
+.login_service
+{
+  min-height: 60px;
+  min-width: 96px
+}
+*/
+
+.indent {
+  /*text-indent: 1em;*/
+  margin-left: 2em;
+}
+
+/*
+.skill
+{
+    padding: 5px;
+}
+*/
+
+.user-summary-full img,
+.user-summary-full a
+{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+.myTag a,
+.myTag a:hover
+.myTag a:visited  
+{
+    text-decoration: none;
+}
+
+.myTag a,
+.myTag a:visited  
+{
+    color: silver;
+}
+
+.myTag a:hover
+{
+    color: gray;  
+}
+
+.skill,
+.myTag
+{
+    padding: 5px;
+    line-height: 18px;
+    margin-bottom: 5px;
+}
+
+.myTag
+{
+    margin-right: 5px;
+}
+
+
+textarea 
+{
+  width: 100%;
+
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+
+  margin-bottom: 10px;
+}
+
+
+form .row-fluid .span12 /*,
+form .row-fluid .span2 */
+{
+  margin-left: 0;
+}
+
+a.myUserRemover,
+a:hover.myUserRemover,
+a:visited.myUserRemover
+{
+    text-decoration: none;
+    color: gray;
+}
+
+/*img*/.user-img
+{
+    width: 100px;
+    height: 100px;
+}
+
+.user-img-large
+{
+    max-width: 100%;
+    /* max-width: 50px; */
+    max-height: 322px;
+}
+
+.spaced-top
+{
+    margin-top: 2em;
+}
+
+.spaced-top h4
+{
+    padding-bottom: 0.16em;
+}
+
+.login-service
+{
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+/*
+.radio 
+{
+  line-height: 30px;
+  min-height: 30px;
+  padding-top: 5px;
+}
+*/
+
+.role-term
+{
+    min-height: 40px;
+}
+
+.usr-top-view-padding
+{
+    min-height: 20px;
+}
+
+.top-align
+{
+    vertical-align: top; 
+}
+
+.hor-margin
+{
+    margin-left: 5px;
+}
+
+/*
+.img-header-profile
+{
+    max-width: 20px;
+    max-height: 20px;
+}
+*/
+
+.img-header-profile-big
+{
+    max-width: 40px;
+    max-height: 40px;
+    margin-right: 10px;
+}
+
+.block-text
+{
+    display: block;
+}
+
+/* I won't spend more time on this */
+/*
+#text-search-top 
+{
+    padding-right: 30px;
+}
+
+#text-search-top:focus
+{
+    margin-right: 30px; 
+    padding-right: 0;
+}
+
+#btn-search-top
+{
+    position: absolute;
+    right: 0;
+}
+*/
+
+.suggested-projects
+{
+    background-color: #007AFF; /*#ebff00;*/
+    background-color: rgba(0, 122, 255, 0.05); /*rgba(235, 255, 0, 0.15);*/
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #e3e3e3;
+}
+
+form.inline,
+h4.inline,
+span.inline
+{
+    display: inline;
+}
+
+#alert-js
+{
+    display: none;
+}
+
+/*
+.inline-block
+{
+    display: inline-block;
+}
+*/
