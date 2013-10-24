@@ -110,52 +110,7 @@
                         <?php } ?>
 
 
-                            <div>
-                                <h4>Your Role</h4>
-                                <?php 
-                                    foreach ($userDetails->lRoles as $iRole) 
-                                    {
-                                ?>
-                                    <div class="row-fluid role-term">
-                                        <div class="span4">
-                                            <label class="radio">
-                                            <?php
-                                                echo form_radio(array(
-                                                    'id' => 'radio-role-'.$iRole->id,
-                                                    'name' => 'radio-role',
-                                                    'value' => $iRole->id,
-                                                    'checked' => $iRole->id == $userDetails->role->id
-                                                ));
-                                            ?>
-                                            <?php
-                                                $roleNameStr = $iRole->name;
-                                                if (strtolower($iRole->name) == 'student') $roleNameStr = $roleNameStr.' graduating in ';
-                                                echo ucwords($roleNameStr);
-                                            ?>
-                                            </label>
-                                        </div>
-
-                                        <div class="span4">
-                                            <?php 
-                                                if (strtolower($iRole->name) == 'student') 
-                                                { 
-                                                    $arrTermsOptions = array();
-
-                                                    foreach ($userDetails->lTerms as $iTerm) 
-                                                    {
-                                                        //echo $iTerm->id.' '.$iTerm->name;
-                                                        $arrTermsOptions[$iTerm->id] = ucwords($iTerm->name);
-                                                    }
-
-                                                    echo form_dropdown('dropdown-term', $arrTermsOptions, $userDetails->user->graduation_term);
-                                                } 
-                                            ?>
-                                        </div>
-                                    </div>
-                                <?php
-                                    }
-                                ?>
-                            </div>
+                        
                     </div>
                 </div>
 

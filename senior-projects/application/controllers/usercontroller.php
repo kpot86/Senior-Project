@@ -545,7 +545,7 @@ class UserController extends CI_Controller
         return $result_terms;
     }
 
-    private function get_profile($user_id, $lTerms)
+    private function get_profile($user_id)
     {       
         $result = $this->spw_user_model->get_profile_by_id($user_id);
 
@@ -565,9 +565,9 @@ class UserController extends CI_Controller
 
     private function getUserDetails($user_id)
     {
-        $lTerms = $this->get_all_available_terms();        
+        //$lTerms = $this->get_all_available_terms();        
 
-        $user = $this->get_profile($user_id, $lTerms);
+        $user = $this->get_profile($user_id);
     
         $skills_ids = $this->spw_skill_user_model->get_skills_for_user($user_id);
 
@@ -634,7 +634,7 @@ class UserController extends CI_Controller
         $userDetailsViewModel->lExperiences = $lExperiences;
         $userDetailsViewModel->lLanguages = $lLanguages;
         $userDetailsViewModel->role = $role;
-        $userDetailsViewModel->lTerms = $lTerms;
+       // $userDetailsViewModel->lTerms = $lTerms;
         $userDetailsViewModel->lRoles = $lRoles;
 
         return $userDetailsViewModel;
