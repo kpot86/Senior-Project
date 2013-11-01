@@ -360,5 +360,9 @@ $config['rewrite_short_tags'] = FALSE;
 $config['proxy_ips'] = '';
 
 
+$config['fiu_api_url'] = 'http://srprog-spr13-01.aul.fiu.edu:8080/SPW2-RegisterAPI/rest/SPWRegister/getUserInfo/123FIUspw/' ; 
+
+
+
 /* End of file config.php */
 /* Location: ./application/config/config.php */
