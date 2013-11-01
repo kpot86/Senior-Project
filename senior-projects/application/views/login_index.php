@@ -93,7 +93,7 @@
 
 <div class="indent">
     <h3>
-        <?php echo anchor('register/', 'click here for Guest Access') ?>    
+        <?php echo anchor('register/', 'click here for Guest Access!!!!') ?>    
     </h3>
 </div>
 
