@@ -30,7 +30,7 @@ class RegisterController extends CI_Controller
             $res = $this->spw_user_model->is_spw_registered($this->input->post('email_address'));
             if($res == false)
             {
-                $new_user_id = $this->spw_user_model->create_new_spw_user($this->input->post('email_address'), $this->input->post('password_1'));
+                $new_user_id = $this->spw_user_model->create_new_spw_user($this->input->post('email_address'), $this->input->post('password_1') , "STUDENT");
                 
 
                 $sess_array = array(

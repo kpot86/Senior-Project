@@ -56,10 +56,10 @@ class ProjectController extends CI_Controller
 
             $current_user_id = getCurrentUserId($this);
 
-            if (!is_test($this))
-            {
-                $this->spw_notification_model->create_professor_approval_project($current_user_id, $project_id);
-            }
+//            if (!is_test($this))
+//            {
+//                $this->spw_notification_model->create_professor_approval_project($current_user_id, $project_id);
+//            }
 
             setFlashMessage($this, 'Your project has been sent for approval');
 
@@ -138,7 +138,7 @@ class ProjectController extends CI_Controller
             $resulting_view_name = 'project_details2_edit';
 
             //get the people suggestion for the current project
-            $data['suggested_mentors'] = $this->getSuggestedMentorsForCurrentProjectInternal($project_id);
+            //$data['suggested_mentors'] = $this->getSuggestedMentorsForCurrentProjectInternal($project_id);
             $data['suggested_students'] = $this->getSuggestedStudentsForCurrentProjectInternal($project_id);
             $data['can_leave_project'] = $this->getCurrentUserCanLeaveProjectInternal($project_id);
         }
@@ -208,15 +208,15 @@ class ProjectController extends CI_Controller
                 $updated_project->description = $updated_project_description;
                 $updated_project->max_students = $updated_project_max_students;
 
-                if ($this->SPW_User_Model->isUserAStudent($current_user_id))
-                {
-                    $graduationTerm = $this->SPW_User_Model->getUserGraduationTerm($current_user_id);
-                    $updated_project->delivery_term = $graduationTerm->id;
-                }
-                else
-                {
+//                if ($this->SPW_User_Model->isUserAStudent($current_user_id))
+//                {
+////                    $graduationTerm = $this->SPW_User_Model->getUserGraduationTerm($current_user_id);
+////                    $updated_project->delivery_term = $graduationTerm->id;
+//                }
+//                else
+               // {
                     $updated_project->delivery_term = $updated_term_id;
-                }
+               // }
                 
                 if (isset($new_project) && $new_project)
                 {
@@ -230,7 +230,7 @@ class ProjectController extends CI_Controller
                         if (isset($updated_skill_names_str) && ($updated_skill_names_str != ''))
                             $this->SPW_Project_Model->assignSkillsToProject($updated_skill_names_str, $new_project_id);
 
-                        $this->spw_notification_model->create_professor_approval_project($current_user_id, $new_project_id);
+                       // $this->spw_notification_model->create_professor_approval_project($current_user_id, $new_project_id);
 
                         setFlashMessage($this, 'Your project was created');
 
@@ -259,7 +259,7 @@ class ProjectController extends CI_Controller
                         //if (isset($updated_skill_names_str) && ($updated_skill_names_str != ''))
                             $this->SPW_Project_Model->updateProjectSkills($updated_skill_names_str, $project->id);
 
-                        $this->SPW_Project_Model->updateProjectUsers($update_mentor_ids_str, $update_team_members_ids_str, $project->id);
+                      //  $this->SPW_Project_Model->updateProjectUsers($update_mentor_ids_str, $update_team_members_ids_str, $project->id);
 
                         setFlashMessage($this, 'Your project was updated');
                     }
@@ -629,8 +629,8 @@ class ProjectController extends CI_Controller
             if ($this->SPW_User_Model->isUserAStudent(getCurrentUserId($this)))
             {
                 $term = $this->SPW_User_Model->getUserGraduationTerm(getCurrentUserId($this));
-                $closedRequestsDate = date('D, d M Y', strtotime($term->closed_requests));
-                $message = 'You have not joined to a project yet. Please do so before '.$closedRequestsDate;
+               // $closedRequestsDate = date('D, d M Y', strtotime($term->closed_requests));
+                $message = 'You have not joined to a project yet. Please do so before ' ;//.$closedRequestsDate;
             }
             else
             {
@@ -940,7 +940,8 @@ class ProjectController extends CI_Controller
         {
             $user_id = getCurrentUserId($this);
             $lStudents = array();
-            $lStudentIds = $this->SPW_Project_Model->getSuggestedStudentsGivenMyProject($project_id);
+            $lStudentIds = null;
+           // $lStudentIds = $this->SPW_Project_Model->getSuggestedStudentsGivenMyProject($project_id);
             $lStudents = $this->SPW_User_Summary_View_Model->prepareUsersDataToShow($user_id, $lStudentIds);
             if (isset($lStudents) && (count($lStudents) > 0))
                 return $lStudents;
@@ -960,7 +961,7 @@ class ProjectController extends CI_Controller
         {
             $user_id = getCurrentUserId($this);
             $lMentors = array();
-            $lMentorIds = $this->SPW_Project_Model->getSuggestedMentorsGivenMyProject($project_id);
+           // $lMentorIds = $this->SPW_Project_Model->getSuggestedMentorsGivenMyProject($project_id);
             $lMentors = $this->SPW_User_Summary_View_Model->prepareUsersDataToShow($user_id, $lMentorIds);
             if (isset($lMentors) && (count($lMentors) > 0))
                 return $lMentors;

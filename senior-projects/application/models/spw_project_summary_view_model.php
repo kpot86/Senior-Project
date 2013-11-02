@@ -77,7 +77,7 @@ class SPW_Project_Summary_View_Model extends CI_Model
 
                 $term = $tempProject->getProjectTermInfo($project_id);
 
-                $project_summ_vm->statusName = $tempStatus->getStatusName($project->status);
+                $project_summ_vm->statusName = $project->status ;
 
                 if (isset($term))
                 {
@@ -106,11 +106,11 @@ class SPW_Project_Summary_View_Model extends CI_Model
                     $project_summ_vm->lSkills = $lSkills;
                 }
 
-                $lMentorsSumm = $tempProject->getMentorsListForProject($project_id);
-                if (isset($lMentorsSumm) && count($lMentorsSumm)>0)
-                {
-                    $project_summ_vm->lMentorSummaries = $lMentorsSumm;
-                }
+                //$lMentorsSumm = $tempProject->getMentorsListForProject($project_id);
+//                if (isset($lMentorsSumm) && count($lMentorsSumm)>0)
+//                {
+//                    $project_summ_vm->lMentorSummaries = $lMentorsSumm;
+//                }
 
                 $proposedBySumm = $tempProject->getProposedByOfProject($project_id);
                 if (isset($proposedBySumm))

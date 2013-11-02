@@ -22,9 +22,7 @@ class UserController extends CI_Controller
         $this->load->model('spw_language_user_model');
         $this->load->model('spw_term_model');
         $this->load->model('spw_user_model');
-        $this->load->model('spw_experience_model');
-        $this->load->model('spw_role_model');
-        $this->load->model('spw_role_user_model');
+        $this->load->model('spw_experience_model');       
         $this->load->model('spw_notification_model');
 
         $this->load->model('SPW_User_Details_View_Model');
@@ -604,27 +602,8 @@ class UserController extends CI_Controller
             $position->start_date = $positions[$i]->start_date;
             $position->end_date = $positions[$i]->end_date;
             array_push($lExperiences, $position);
-        }
-
-        $roles = $this->spw_role_model->get_roles();
-
-        $lRoles = array();
-        for($i = 0; $i < count($roles); $i++)
-        {
-            $role = new SPW_Role_Model();
-            $role->id = $roles[$i]->id;
-            $role->name = $roles[$i]->name; 
-            array_push($lRoles,$role);
-        }
-
-        $userrole = $this->spw_role_user_model->get_role($user_id);
-        
-        if(isset($userrole))
-        {
-            $role = new SPW_Role_Model();
-            $role->id = $userrole->role;    
-        }
-        
+        }  
+     
         $current_user_id = getCurrentUserId($this);
         $invite = $this->SPW_User_Model->canInviteUser($current_user_id, $user_id);
 
@@ -633,9 +612,7 @@ class UserController extends CI_Controller
         $userDetailsViewModel->lSkills = $lSkills;
         $userDetailsViewModel->lExperiences = $lExperiences;
         $userDetailsViewModel->lLanguages = $lLanguages;
-        $userDetailsViewModel->role = $role;
-       // $userDetailsViewModel->lTerms = $lTerms;
-        $userDetailsViewModel->lRoles = $lRoles;
+       // $userDetailsViewModel->lRoles = $lRoles;
 
         return $userDetailsViewModel;
 
@@ -751,39 +728,15 @@ class UserController extends CI_Controller
             $experience1,
             $experience2,
             $experience3
-        );
-
-
-        $role1 = new SPW_Role_Model();
-        $role1->id = 4;
-        $role1->name = 'Client';
-
-        $role2 = new SPW_Role_Model();
-        $role2->id = 3;
-        $role2->name = 'Professor';
-
-        $role = new SPW_Role_Model();
-        $role->id = 5;
-        $role->name = 'Student';
-
-
-        $lRoles = array(
-            $role,
-            $role2,
-            $role1
-        );
-
+        );       
 
         $userDetailsViewModel = new SPW_User_Details_View_Model();
         $userDetailsViewModel->user = $user1;
         $userDetailsViewModel->lSkills = $lSkills;
         $userDetailsViewModel->lExperiences = $lExperiences;
-        $userDetailsViewModel->lLanguages = $lLanguages;
-        $userDetailsViewModel->role = $role;
-        $userDetailsViewModel->lTerms = $lTerms;
-        $userDetailsViewModel->lRoles = $lRoles;
+        $userDetailsViewModel->lLanguages = $lLanguages;        
+        $userDetailsViewModel->lTerms = $lTerms;       
         $userDetailsViewModel->invite = true;
-
         return $userDetailsViewModel;
     }
 

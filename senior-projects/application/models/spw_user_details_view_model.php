@@ -24,8 +24,7 @@ class SPW_User_Details_View_Model extends SPW_User_Summary_View_Model
 
 	public function prepareUserDataDetailsToShow($current_user_id, $user_id)
 	{
-		$tempUser = new SPW_User_Model();
-		$tempRole = new SPW_Role_Model();
+		$tempUser = new SPW_User_Model();		
 		$tempTerm = new SPW_Term_Model();
 
 		$userDetailsViewModel = new SPW_User_Details_View_Model();

@@ -46,6 +46,24 @@ class SPW_User_Model extends CI_Model
             return null; 
         }
     }
+    
+    public function get_Status($user_id)
+    {
+        $query = $this->db
+                      ->where('id', $user_id)
+                      ->select('status')
+                      ->get('spw_user');
+
+        if($query->num_rows() > 0)
+        {
+            return $query->row()->status;
+        }
+        else
+        {
+            return null; 
+        }
+    } 
+    
 
     public function get_project($user_id)
     {
@@ -116,22 +134,22 @@ class SPW_User_Model extends CI_Model
         }    
     }
 
-    public function get_head_professor()
-    {
-        $query = $this->db
-                      ->where('role', 2)
-                      ->select('user')
-                      ->get('spw_role_user');
-
-        if($query->num_rows() > 0)
-        {
-            return $query->row()->user;
-        }
-        else
-        {
-            return null; 
-        }     
-    }
+//    public function get_head_professor()
+//    {
+//        $query = $this->db
+//                      ->where('role', 2)
+//                      ->select('user')
+//                      ->get('spw_role_user');
+//
+//        if($query->num_rows() > 0)
+//        {
+//            return $query->row()->user;
+//        }
+//        else
+//        {
+//            return null; 
+//        }     
+//    }
 
 
     public function get_proposed_project($spw_id)
@@ -219,11 +237,12 @@ class SPW_User_Model extends CI_Model
         }
     }
 
-    public function create_new_spw_user($email_address, $password)
+    public function create_new_spw_user($email_address, $password ,$role)
     {
         $data = array(
            'email' =>  $email_address ,
            'hash_pwd' =>  sha1($password),
+           'role' => $role
         );
 
         $this->db->insert('spw_user', $data);
@@ -250,7 +269,7 @@ class SPW_User_Model extends CI_Model
     }
 
 
-    public function create_new_google_user($email_address, $given_name, $family_name,$google_id)
+    public function create_new_google_user($email_address, $given_name, $family_name,$google_id , $role)
     {
     
         $data = array(
@@ -258,6 +277,7 @@ class SPW_User_Model extends CI_Model
            'first_name' => $given_name, 
            'last_name' => $family_name,
            'google_id' => $google_id,
+           'role' => $role
         );
  
         $this->db->insert('spw_user', $data);
@@ -470,11 +490,15 @@ class SPW_User_Model extends CI_Model
         }
         
         $this->db->where('id',$spw_id);
-        $this->db->update('spw_user', $data);
-
-        $this->load->model('spw_role_user_model');
-        $this->spw_role_user_model->update_roles_for_user($spw_id, $new_profile->updatedRoleId);
+        $this->db->update('spw_user', $data);      
     }
+    
+     public function set_Status($user_id , $s_status)
+    {
+        $this->db->where('id', $user_id)
+                  ->update('status' ,$s_status );      
+    }
+    
 
     /* return a SPW_Term_Model info corresponding to the user id */
     public function getUserGraduationTerm($user_id)
@@ -585,9 +609,9 @@ class SPW_User_Model extends CI_Model
     {
         $param[0] = $user_id;
 
-        $sql = 'select spw_role.*
-                from spw_role, spw_role_user
-                where (spw_role_user.user = ?) and (spw_role.id = spw_role_user.role)';
+        $sql = 'select spw_user.role
+                from spw_user 
+                where (spw_user.user = ?) ';
         $query = $this->db->query($sql, $param);
 
         if ($query->num_rows() > 0)
@@ -637,31 +661,7 @@ class SPW_User_Model extends CI_Model
                 $query1 = $this->db->query($sql1, $param1);
             }
         }
-        elseif ($this->isUserPossibleMentor($user_id))
-        {
-            $param[0] = $user_id;
-
-            $sql = 'select spw_project.id, count(project_skills.skill) as nSkillMatch
-                    from spw_project, (select skill
-                                       from spw_skill_user
-                                       where user = ?) as skills, (select spw_project.id, skill
-                                                                   from spw_project, spw_skill_project, spw_term
-                                                                   where (spw_project.id = project) and (spw_project.status <> 4) and
-                                                                         (spw_term.id = spw_project.delivery_term) and (spw_term.closed_requests >= NOW())) 
-                                                                         as project_skills
-                    where (skills.skill=project_skills.skill) and (spw_project.id=project_skills.id)
-                    group by spw_project.id
-                    order by nSkillMatch DESC';
-
-            $query = $this->db->query($sql, $param);
-
-            $sql1 = 'select spw_project.id
-                     from spw_project, spw_term
-                     where (spw_project.status <> 4) and (spw_term.id = spw_project.delivery_term) 
-                            and (spw_term.end_date > NOW())';
-
-            $query1 = $this->db->query($sql1);
-        }
+       
 
         if (isset($query))
         {
@@ -695,16 +695,7 @@ class SPW_User_Model extends CI_Model
                 $query = $this->db->query($sql, $param);
             }
         }
-        elseif ($this->isUserPossibleMentor($user_id))
-        {
-            $sql = 'select spw_project.id
-                    from spw_project, spw_term
-                    where (spw_project.status <> 4) and (spw_term.id = spw_project.delivery_term) 
-                          and (spw_term.end_date > NOW())
-                    order by id ASC';
-
-             $query = $this->db->query($sql);
-        }
+       
 
         if (isset($query))
         {
@@ -730,9 +721,10 @@ class SPW_User_Model extends CI_Model
     public function isUserAStudent($user_id)
     {
         $param[0] = $user_id;
-        $sql = 'select id
-                from spw_role_user
-                where (user = ?) and (role = 5)';
+        $sql = 'select role
+                from spw_user
+                where (id = ?) and (role = "STUDENT")';
+        
         $query = $this->db->query($sql, $param);
         if ($query->num_rows() > 0)
         {
@@ -744,9 +736,9 @@ class SPW_User_Model extends CI_Model
     public function isUserAdmin($user_id)
     {
         $param[0] = $user_id;
-        $sql = 'select id
-                from spw_role_user
-                where (user = ?) and (role = 1)';
+        $sql = 'select role
+                from spw_user
+                where (id = ?) and (role = "ADMIN")';
         $query = $this->db->query($sql, $param);
         if ($query->num_rows() > 0)
         {
@@ -758,9 +750,9 @@ class SPW_User_Model extends CI_Model
     public function isUserHeadProfessor($user_id)
     {
         $param[0] = $user_id;
-        $sql = 'select id
-                from spw_role_user
-                where (user = ?) and (role = 2)';
+        $sql = 'select role
+                from spw_user
+                where (id = ?) and (role = "HEAD")';
         $query = $this->db->query($sql, $param);
         if ($query->num_rows() > 0)
         {
@@ -769,19 +761,7 @@ class SPW_User_Model extends CI_Model
         return NULL;
     }
 
-    public function isUserPossibleMentor($user_id)
-    {
-        $param[0] = $user_id;
-        $sql = 'select id
-                from spw_role_user
-                where (user = ?) and ((role = 2) or (role = 3) or (role = 4))';
-        $query = $this->db->query($sql, $param);
-        if ($query->num_rows() > 0)
-        {
-            return true;
-        }
-        return NULL;
-    }
+
 
     public function getStudentIdsFromListIds($lUser)
     {
@@ -799,21 +779,21 @@ class SPW_User_Model extends CI_Model
         return $res;
     }
 
-    public function getMentorIdsFromListIds($lUser)
-    {
-        $res = array();
-        if (isset($lUser) && count($lUser)>0)
-        {
-            $length = count($lUser);
-            for ($i = 0; $i < $length; $i++)
-            {
-                if ($this->isUserPossibleMentor($lUser[$i]))
-                    $res[] = $lUser[$i];
-            }
-        }
-
-        return $res;
-    }
+//    public function getMentorIdsFromListIds($lUser)
+//    {
+//        $res = array();
+//        if (isset($lUser) && count($lUser)>0)
+//        {
+//            $length = count($lUser);
+//            for ($i = 0; $i < $length; $i++)
+//            {
+//                if ($this->isUserPossibleMentor($lUser[$i]))
+//                    $res[] = $lUser[$i];
+//            }
+//        }
+//
+//        return $res;
+//    }
 
     /* return the id of the projects the user belong or false if does not have a project */
     public function userHaveProjects($user_id)
@@ -827,13 +807,13 @@ class SPW_User_Model extends CI_Model
                     where (spw_user.id = ?) and (project = spw_project.id) 
                            and (spw_project.status <> 4)';
         }
-        else
-        {
-            $sql = 'select project
-                    from spw_mentor_project, spw_project
-                    where (mentor = ?) and (spw_project.id = spw_mentor_project.project) 
-                           and (spw_project.status <> 4)';
-        }
+//        else
+//        {
+//            $sql = 'select project
+//                    from spw_mentor_project, spw_project
+//                    where (mentor = ?) and (spw_project.id = spw_mentor_project.project) 
+//                           and (spw_project.status <> 4)';
+//        }
 
         $query = $this->db->query($sql, $param);
 
@@ -866,12 +846,12 @@ class SPW_User_Model extends CI_Model
                     from spw_user, spw_project
                     where (spw_user.id = ?) and (project = spw_project.id)';
         }
-        else
-        {
-            $sql = 'select project
-                    from spw_mentor_project, spw_project
-                    where (mentor = ?) and (spw_project.id = spw_mentor_project.project)';
-        }
+//        else
+//        {
+//            $sql = 'select project
+//                    from spw_mentor_project, spw_project
+//                    where (mentor = ?) and (spw_project.id = spw_mentor_project.project)';
+//        }
 
         $query = $this->db->query($sql, $param);
 
@@ -1190,12 +1170,12 @@ class SPW_User_Model extends CI_Model
                             set project = NULL
                             where id = ?';
                 }
-                else
-                {
-                    $sql = 'delete
-                            from spw_mentor_project
-                            where (mentor = ?) and (project = ?)';
-                }
+//                else
+//                {
+//                    $sql = 'delete
+//                            from spw_mentor_project
+//                            where (mentor = ?) and (project = ?)';
+//                }
 
                 $query = $this->db->query($sql, $param);  
                 return true;
@@ -1225,18 +1205,18 @@ class SPW_User_Model extends CI_Model
                         $this->db->update('spw_user', $user);
                     }
                 }
-                else
-                {
-                    $query = $this->db->get_where('spw_mentor_project', array('mentor' => $user_id,'project' => $project_id));
-                    if ($query->num_rows() == 0)
-                    {
-                         $data = array('mentor'  => $user_id, 
-                                       'project' => $project_id
-                                      );
-
-                        $this->db->insert('spw_mentor_project', $data); 
-                    }
-                }
+//                else
+//                {
+//                    $query = $this->db->get_where('spw_mentor_project', array('mentor' => $user_id,'project' => $project_id));
+//                    if ($query->num_rows() == 0)
+//                    {
+//                         $data = array('mentor'  => $user_id, 
+//                                       'project' => $project_id
+//                                      );
+//
+//                        $this->db->insert('spw_mentor_project', $data); 
+//                    }
+//                }
 
                 return true;
             }

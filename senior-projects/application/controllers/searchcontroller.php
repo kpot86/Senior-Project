@@ -127,7 +127,7 @@ class SearchController extends CI_Controller
 
                 if (isset($lUserIds) && count($lUserIds)>0)
                 {
-                    $lMentorIds = $this->SPW_User_Model->getMentorIdsFromListIds($lUserIds);
+//                    $lMentorIds = $this->SPW_User_Model->getMentorIdsFromListIds($lUserIds);
                     $lStudentIds = $this->SPW_User_Model->getStudentIdsFromListIds($lUserIds);
 
                     if (isset($lMentorIds) && count($lMentorIds)>0)

@@ -135,10 +135,6 @@ class LoginController extends CI_Controller
         $is_google_registered = true; 
 
         $this->load->model('spw_user_model');
-        
-       
-        
-        
         //call API
       
        $s_url =  $this->config->item('fiu_api_url') . $email;
@@ -156,7 +152,7 @@ class LoginController extends CI_Controller
                 );
        
        
-         if (! $panther_user_info->valid)
+       if (! $panther_user_info->valid)
        {
              $data['credentials_error'] = "Invalid Credentials";        
              $this->load->view('login_index',$data);  
@@ -165,7 +161,7 @@ class LoginController extends CI_Controller
         $spw_id = $this->spw_user_model->is_google_registered($id);
 
         if($spw_id == 0){
-                $spw_id  = $this->spw_user_model->create_new_google_user($email, $panther_user_info->firstName, $panther_user_info->lastName, $id);
+                $spw_id  = $this->spw_user_model->create_new_google_user($email, $panther_user_info->firstName, $panther_user_info->lastName, $id , "SUDENT");
                 $is_google_registered = false;
         }
 

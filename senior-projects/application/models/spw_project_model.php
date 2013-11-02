@@ -73,12 +73,8 @@ class SPW_Project_Model extends CI_Model
 
     public function update_status($project_id, $status)
     {   
-        $query = $this->db
-                      ->where('name',$status)
-                      ->get('spw_project_status');
-
         $data = array(
-            'status' => $query->row()->id
+            'status' => $status
         );
 
         $this->db->where('id',$project_id);
@@ -262,9 +258,8 @@ class SPW_Project_Model extends CI_Model
         $param[0] = $project_id;
 
         $sql = 'select spw_user.id
-                from spw_role_user, spw_user
-                where (spw_user.project = ?) and (spw_role_user.user = spw_user.id) and 
-                      (spw_role_user.role = 5)';
+                from  spw_user
+                where (spw_user.project = ?) and (spw_user.role = "STUDENT")';
         $query = $this->db->query($sql, $param);
 
         $lStudentIds = array();
@@ -285,9 +280,10 @@ class SPW_Project_Model extends CI_Model
         $param[0] = $project_id;
 
         $sql = 'select spw_user.*
-                from spw_role_user, spw_user
-                where (spw_user.project = ?) and (spw_role_user.user = spw_user.id) and 
-                      (spw_role_user.role = 5)';
+                from  spw_user
+                where (spw_user.project = ?) and (spw_user.role = "STUDENT" ) and 
+                (spw_user.status = "ACTIVE" ) ';
+        
         $query = $this->db->query($sql, $param);
 
         $studentsNum = $query->num_rows();
@@ -353,52 +349,52 @@ class SPW_Project_Model extends CI_Model
     }
 
     //get the mentor ids that belong to the project
-    public function getMentorIdsListForProject($project_id)
-    {
-        $param[0] = $project_id;
+//    public function getMentorIdsListForProject($project_id)
+//    {
+//        $param[0] = $project_id;
+//
+//        $sql = 'select spw_user.id
+//                from spw_user, spw_mentor_project
+//                where (spw_mentor_project.project = ?) and (spw_mentor_project.mentor = spw_user.id)';
+//        $query = $this->db->query($sql, $param);
+//
+//        $lMentorIds = array();
+//        if ($query->num_rows() > 0)
+//        {
+//            foreach ($query->result() as $row) 
+//            {
+//                $lMentorIds[] = $row->id;
+//            }
+//        }
+//
+//        return $lMentorIds;
+//    }
 
-        $sql = 'select spw_user.id
-                from spw_user, spw_mentor_project
-                where (spw_mentor_project.project = ?) and (spw_mentor_project.mentor = spw_user.id)';
-        $query = $this->db->query($sql, $param);
-
-        $lMentorIds = array();
-        if ($query->num_rows() > 0)
-        {
-            foreach ($query->result() as $row) 
-            {
-                $lMentorIds[] = $row->id;
-            }
-        }
-
-        return $lMentorIds;
-    }
-
-    //get the mentors summary info that belong to the project
-    public function getMentorsListForProject($project_id)
-    {
-        $param[0] = $project_id;
-
-        $sql = 'select spw_user.*
-                from spw_user, spw_mentor_project
-                where (spw_mentor_project.project = ?) and (spw_mentor_project.mentor = spw_user.id)';
-        $query = $this->db->query($sql, $param);
-
-        $mentorsNum = $query->num_rows();
-        $lMentorsSumm = array();
-        if ($mentorsNum > 0)
-        {
-            for ($j = 0; $j < $mentorsNum; $j++)
-            {
-                $row = $query->row($j, 'SPW_User_Model');
-                $user_summ_vm = new SPW_User_Summary_View_Model();
-                $user_summ_vm->user = $row;
-                $lMentorsSumm[] = $user_summ_vm;
-            }
-        }
-
-        return $lMentorsSumm;
-    }
+//    //get the mentors summary info that belong to the project
+//    public function getMentorsListForProject($project_id)
+//    {
+//        $param[0] = $project_id;
+//
+//        $sql = 'select spw_user.*
+//                from spw_user, spw_mentor_project
+//                where (spw_mentor_project.project = ?) and (spw_mentor_project.mentor = spw_user.id)';
+//        $query = $this->db->query($sql, $param);
+//
+//        $mentorsNum = $query->num_rows();
+//        $lMentorsSumm = array();
+//        if ($mentorsNum > 0)
+//        {
+//            for ($j = 0; $j < $mentorsNum; $j++)
+//            {
+//                $row = $query->row($j, 'SPW_User_Model');
+//                $user_summ_vm = new SPW_User_Summary_View_Model();
+//                $user_summ_vm->user = $row;
+//                $lMentorsSumm[] = $user_summ_vm;
+//            }
+//        }
+//
+//        return $lMentorsSumm;
+//    }
 
     /* checks whether a user id belongs to the given project */
     public function doesUserBelongToProject($user_id ,$project_id)
@@ -412,13 +408,7 @@ class SPW_Project_Model extends CI_Model
             $sql = 'select id
                     from spw_user
                     where (id = ?) and (project = ?)';
-        }
-        elseif ($this->SPW_User_Model->isUserPossibleMentor($user_id))
-        {
-            $sql = 'select mentor
-                    from spw_mentor_project
-                    where (mentor = ?) and (project = ?)';
-        }
+        }       
         
         $query = $this->db->query($sql, $param);
 
@@ -648,44 +638,44 @@ class SPW_Project_Model extends CI_Model
         }
     }
 
-    public function updateProjectUsers($update_mentor_ids_str, $update_team_members_ids_str, $project_id)
-    {
-        $tempUser = new SPW_User_Model();
-
-        $currentLMentorIds = $this->getMentorIdsListForProject($project_id);
-        $currentLStudentIds = $this->getStudentIdsListForProject($project_id);
-
-        /*var_dump($currentLMentorIds);
-        echo '<br>';
-        var_dump($currentLStudentIds);
-        echo '<br>';
-        die();*/
-
-        $updatedLMentorIds = $this->explodeCommaSeparatedSkillNamesStr($update_mentor_ids_str);
-        $updatedLStudentIds = $this->explodeCommaSeparatedSkillNamesStr($update_team_members_ids_str);
-
-        $lMentorsToPull = array_diff($currentLMentorIds, $updatedLMentorIds);
-
-        $lMentorsToPull = array_values($lMentorsToPull);
-
-        $lStudentsToPull = array_diff($currentLStudentIds, $updatedLStudentIds);
-
-        $lStudentsToPull = array_values($lStudentsToPull);
-
-        if (isset($lMentorsToPull) && count($lMentorsToPull)>0)
-        {
-            $length = count($lMentorsToPull);
-            for ($i = 0; $i < $length; $i++)
-                $tempUser->leaveProjectOnDatabase($lMentorsToPull[$i], $project_id);
-        }
-
-        if (isset($lStudentsToPull) && count($lStudentsToPull)>0)
-        {
-            $length = count($lStudentsToPull);
-            for ($i = 0; $i < $length; $i++)
-                $tempUser->leaveProjectOnDatabase($lStudentsToPull[$i], $project_id);
-        }
-    }
+//    public function updateProjectUsers($update_mentor_ids_str, $update_team_members_ids_str, $project_id)
+//    {
+//        $tempUser = new SPW_User_Model();
+//
+//     $currentLMentorIds = $this->getMentorIdsListForProject($project_id);
+//        $currentLStudentIds = $this->getStudentIdsListForProject($project_id);
+//
+//        /*var_dump($currentLMentorIds);
+//        echo '<br>';
+//        var_dump($currentLStudentIds);
+//        echo '<br>';
+//        die();*/
+//
+//        $updatedLMentorIds = $this->explodeCommaSeparatedSkillNamesStr($update_mentor_ids_str);
+//        $updatedLStudentIds = $this->explodeCommaSeparatedSkillNamesStr($update_team_members_ids_str);
+//
+//        $lMentorsToPull = array_diff($currentLMentorIds, $updatedLMentorIds);
+//
+//        $lMentorsToPull = array_values($lMentorsToPull);
+//
+//        $lStudentsToPull = array_diff($currentLStudentIds, $updatedLStudentIds);
+//
+//        $lStudentsToPull = array_values($lStudentsToPull);
+//
+//        if (isset($lMentorsToPull) && count($lMentorsToPull)>0)
+//        {
+//            $length = count($lMentorsToPull);
+//            for ($i = 0; $i < $length; $i++)
+//                $tempUser->leaveProjectOnDatabase($lMentorsToPull[$i], $project_id);
+//        }
+//
+//        if (isset($lStudentsToPull) && count($lStudentsToPull)>0)
+//        {
+//            $length = count($lStudentsToPull);
+//            for ($i = 0; $i < $length; $i++)
+//                $tempUser->leaveProjectOnDatabase($lStudentsToPull[$i], $project_id);
+//        }
+//    }
 
     public function explodeCommaSeparatedSkillNamesStr($skillNamesStr)
     {
@@ -723,9 +713,9 @@ class SPW_Project_Model extends CI_Model
         }
 
         $query = $this->db
-                      ->where('project',$project_id)
-                      ->select('mentor')
-                      ->get('spw_mentor_project');  
+                      ->where('id',$project_id)
+                      ->select('mentors')
+                      ->get('spw_project');  
 
         if ($query->num_rows() > 0)
         {
@@ -758,8 +748,6 @@ class SPW_Project_Model extends CI_Model
         {
             $this->add_student_to_project($user_id, $project_id);
 
-        }else if($this->spw_user_model->isUserPossibleMentor($user_id)){
-            $this->add_mentor_to_project($user_id, $project_id);
         }
     }
 
@@ -773,16 +761,16 @@ class SPW_Project_Model extends CI_Model
         $this->db->update('spw_user', $data);
     }
 
-    public function add_mentor_to_project($mentor_id, $project_id)
-    {
-      
-        $data = array(
-            'mentor' => $mentor_id,
-            'project' => $project_id,
-        );
-
-        $this->db->insert('spw_mentor_project', $data);
-    }
+//    public function add_mentor_to_project($mentor_id, $project_id)
+//    {
+//      
+//        $data = array(
+//            'mentor' => $mentor_id,
+//            'project' => $project_id,
+//        );
+//
+//        $this->db->insert('spw_mentor_project', $data);
+//    }
 }
 
 ?>

@@ -169,7 +169,7 @@
                 <?php 
                     if (isset($projectDetails->onlyShowUserTerm) && ($projectDetails->onlyShowUserTerm)) 
                     { 
-                        echo strtoupper($projectDetails->term->name);
+                       // echo strtoupper($projectDetails->term->name);
                     } 
                     else 
                     { 
