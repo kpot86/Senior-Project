@@ -340,9 +340,9 @@ class UserController extends CI_Controller
                     'picture'               => property_exists($user, 'pictureUrl')? $user->pictureUrl: null,
                     'headline_linkedIn'     => property_exists($user, 'headline')? $user->headline: null,
                     'summary_linkedIn'      => property_exists($user, 'summary')? $user->summary: null,
-					'positions_linkedIn'    => property_exists($user, 'positions_linkedIn')? ($user->positions->_total != 0 ? $this->parse_positions($user->positions):NULL ): null,
-					'skills'   				=> property_exists($user, 'skills')? ($user->skills->_total != 0 ?$this->parse_skills($user->skills):NULL): null,
-					'languages'    			=> property_exists($user, 'languages')?( $user->languages->_total != 0 ?$this->parse_languages($user->languages):NULL ): null
+                    'positions_linkedIn'    => property_exists($user, 'positions_linkedIn')? ($user->positions->_total != 0 ? $this->parse_positions($user->positions):NULL ): null,
+                    'skills'   		    => property_exists($user, 'skills')? ($user->skills->_total != 0 ?$this->parse_skills($user->skills):NULL): null,
+                    'languages'    	    => property_exists($user, 'languages')?( $user->languages->_total != 0 ?$this->parse_languages($user->languages):NULL ): null
 					
                     
                 );
