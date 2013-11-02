@@ -1,13 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 3.5.1
+-- version 4.0.4.1
 -- http://www.phpmyadmin.net
 --
--- Host: localhost
--- Generation Time: Apr 04, 2013 at 10:19 PM
--- Server version: 5.5.24-log
--- PHP Versiotestn: 5.4.3
+-- Host: 127.0.0.1
+-- Generation Time: Nov 02, 2013 at 10:27 PM
+-- Server version: 5.6.11
+-- PHP Version: 5.5.3
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 
@@ -19,6 +19,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `senior_project_website`
 --
+CREATE DATABASE IF NOT EXISTS `senior_project_website` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `senior_project_website`;
 
 -- --------------------------------------------------------
 
@@ -53,7 +55,6 @@ CREATE TABLE IF NOT EXISTS `spw_language` (
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
 
-
 -- --------------------------------------------------------
 
 --
@@ -69,22 +70,6 @@ CREATE TABLE IF NOT EXISTS `spw_language_user` (
   UNIQUE KEY `language` (`language`,`user`),
   KEY `user` (`user`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=47 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `spw_mentor_project`
---
-
-CREATE TABLE IF NOT EXISTS `spw_mentor_project` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `mentor` bigint(20) unsigned NOT NULL,
-  `project` bigint(20) unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`),
-  UNIQUE KEY `mentor` (`mentor`,`project`),
-  KEY `project` (`project`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
 
 -- --------------------------------------------------------
 
@@ -121,59 +106,13 @@ CREATE TABLE IF NOT EXISTS `spw_project` (
   `max_students` int(11) NOT NULL,
   `proposed_by` bigint(20) unsigned NOT NULL,
   `delivery_term` bigint(20) unsigned NOT NULL,
-  `status` bigint(20) unsigned NOT NULL,
+  `status` varchar(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   KEY `delivery_term` (`delivery_term`),
   KEY `status` (`status`),
   KEY `proposed_by` (`proposed_by`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `spw_project_status`
---
-
-CREATE TABLE IF NOT EXISTS `spw_project_status` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `spw_role`
---
-
-CREATE TABLE IF NOT EXISTS `spw_role` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL,
-  `description` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `spw_role_user`
---
-
-CREATE TABLE IF NOT EXISTS `spw_role_user` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `role` bigint(20) unsigned NOT NULL,
-  `user` bigint(20) unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`),
-  UNIQUE KEY `role` (`role`,`user`),
-  KEY `user` (`user`),
-  KEY `user_2` (`user`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=12 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=23 ;
 
 -- --------------------------------------------------------
 
@@ -187,7 +126,7 @@ CREATE TABLE IF NOT EXISTS `spw_skill` (
   `website_active` bit(1) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=62 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=66 ;
 
 -- --------------------------------------------------------
 
@@ -203,7 +142,7 @@ CREATE TABLE IF NOT EXISTS `spw_skill_project` (
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `skill` (`skill`,`project`),
   KEY `project` (`project`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=19 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=24 ;
 
 -- --------------------------------------------------------
 
@@ -238,6 +177,13 @@ CREATE TABLE IF NOT EXISTS `spw_term` (
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
 
+--
+-- Dumping data for table `spw_term`
+--
+
+INSERT INTO `spw_term` (`id`, `name`, `description`, `start_date`, `end_date`, `closed_requests`) VALUES
+(2, 'Fall 2013', 'fall 2013', '2013-08-26', '2013-12-13', '2013-09-02');
+
 -- --------------------------------------------------------
 
 --
@@ -260,6 +206,8 @@ CREATE TABLE IF NOT EXISTS `spw_user` (
   `google_id` decimal(30,0) DEFAULT NULL,
   `linkedin_id` varchar(30) DEFAULT NULL,
   `facebook_id` bigint(30) DEFAULT NULL,
+  `status` varchar(10) NOT NULL DEFAULT 'ACTIVE',
+  `role` varchar(50) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `google_id` (`google_id`),
@@ -267,7 +215,7 @@ CREATE TABLE IF NOT EXISTS `spw_user` (
   KEY `graduation_term` (`graduation_term`),
   KEY `graduation_term_2` (`graduation_term`),
   KEY `project` (`project`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=70 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=78 ;
 
 --
 -- Constraints for dumped tables
@@ -287,13 +235,6 @@ ALTER TABLE `spw_language_user`
   ADD CONSTRAINT `spw_language_user_ibfk_2` FOREIGN KEY (`user`) REFERENCES `spw_user` (`id`);
 
 --
--- Constraints for table `spw_mentor_project`
---
-ALTER TABLE `spw_mentor_project`
-  ADD CONSTRAINT `spw_mentor_project_ibfk_1` FOREIGN KEY (`mentor`) REFERENCES `spw_user` (`id`),
-  ADD CONSTRAINT `spw_mentor_project_ibfk_2` FOREIGN KEY (`project`) REFERENCES `spw_project` (`id`);
-
---
 -- Constraints for table `spw_notification`
 --
 ALTER TABLE `spw_notification`
@@ -302,26 +243,11 @@ ALTER TABLE `spw_notification`
   ADD CONSTRAINT `spw_notification_ibfk_3` FOREIGN KEY (`to_user`) REFERENCES `spw_user` (`id`);
 
 --
--- Constraints for table `spw_project`
---
-ALTER TABLE `spw_project`
-  ADD CONSTRAINT `spw_project_ibfk_1` FOREIGN KEY (`status`) REFERENCES `spw_project_status` (`id`),
-  ADD CONSTRAINT `spw_project_ibfk_2` FOREIGN KEY (`delivery_term`) REFERENCES `spw_term` (`id`),
-  ADD CONSTRAINT `spw_project_ibfk_3` FOREIGN KEY (`proposed_by`) REFERENCES `spw_user` (`id`);
-
---
--- Constraints for table `spw_role_user`
---
-ALTER TABLE `spw_role_user`
-  ADD CONSTRAINT `spw_role_user_ibfk_1` FOREIGN KEY (`role`) REFERENCES `spw_role` (`id`),
-  ADD CONSTRAINT `spw_role_user_ibfk_2` FOREIGN KEY (`user`) REFERENCES `spw_user` (`id`);
-
---
 -- Constraints for table `spw_skill_project`
 --
 ALTER TABLE `spw_skill_project`
-  ADD CONSTRAINT `spw_skill_project_ibfk_1` FOREIGN KEY (`skill`) REFERENCES `spw_skill` (`id`),
-  ADD CONSTRAINT `spw_skill_project_ibfk_2` FOREIGN KEY (`project`) REFERENCES `spw_project` (`id`);
+  ADD CONSTRAINT `spw_skill_project_ibfk_2` FOREIGN KEY (`project`) REFERENCES `spw_project` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `spw_skill_project_ibfk_1` FOREIGN KEY (`skill`) REFERENCES `spw_skill` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `spw_skill_user`
@@ -329,13 +255,6 @@ ALTER TABLE `spw_skill_project`
 ALTER TABLE `spw_skill_user`
   ADD CONSTRAINT `spw_skill_user_ibfk_1` FOREIGN KEY (`skill`) REFERENCES `spw_skill` (`id`),
   ADD CONSTRAINT `spw_skill_user_ibfk_2` FOREIGN KEY (`user`) REFERENCES `spw_user` (`id`);
-
---
--- Constraints for table `spw_user`
---
-ALTER TABLE `spw_user`
-  ADD CONSTRAINT `spw_user_ibfk_1` FOREIGN KEY (`graduation_term`) REFERENCES `spw_term` (`id`),
-  ADD CONSTRAINT `spw_user_ibfk_2` FOREIGN KEY (`project`) REFERENCES `spw_project` (`id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
