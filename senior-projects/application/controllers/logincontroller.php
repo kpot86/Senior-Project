@@ -27,7 +27,7 @@ class LoginController extends CI_Controller
     }
 
     public function fiu_oauth2()
-    {
+    {         
          $client = new OAuth2\Client(
             '10019035853.apps.googleusercontent.com',
             'MWTrFtPTn3TxUOf8q9jqPpd5',
@@ -49,8 +49,8 @@ class LoginController extends CI_Controller
     }
 
     public function google_oauth2()
-    {
-        $client = new OAuth2\Client(
+    {          
+      $client = new OAuth2\Client(
             '10019035853.apps.googleusercontent.com',
             'MWTrFtPTn3TxUOf8q9jqPpd5',
             'http://srprog-spr13-01.aul.fiu.edu/senior-projects/login/google_oauth2_callback'
@@ -136,10 +136,36 @@ class LoginController extends CI_Controller
 
         $this->load->model('spw_user_model');
         
+       
+        
+        
+        //call API
+      
+       $s_url =  $this->config->item('fiu_api_url') . $email;
+       $jason_return =  file_get_contents( $s_url);
+       $jason_return = json_decode($jason_return);
+
+       $panther_user_info = (object)array(
+                    'valid'                 => $jason_return->valid ,
+                    'id'                    => $jason_return->id,
+                    'email'                 => $jason_return->email,
+                    'firstName'            => $jason_return->firstName,
+                    'lastName'             => $jason_return->lastName,
+                    'middle'                => $jason_return->middle                   	
+                    
+                );
+       
+       
+         if (! $panther_user_info->valid)
+       {
+             $data['credentials_error'] = "Invalid Credentials";        
+             $this->load->view('login_index',$data);  
+             return ; 
+       }
         $spw_id = $this->spw_user_model->is_google_registered($id);
 
         if($spw_id == 0){
-                $spw_id  = $this->spw_user_model->create_new_google_user($email, $given_name, $family_name, $id);
+                $spw_id  = $this->spw_user_model->create_new_google_user($email, $panther_user_info->firstName, $panther_user_info->lastName, $id);
                 $is_google_registered = false;
         }
 
@@ -157,6 +183,5 @@ class LoginController extends CI_Controller
         }else{
             redirect('user','refresh');
         }
-
-    }   
+    }       
 }
