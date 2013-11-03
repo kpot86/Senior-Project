@@ -74,6 +74,8 @@ $route['(?i)(login)'] = 'logincontroller/index';
 $route['(?i)(login)/(:any)'] = 'logincontroller/$2';
 
 $route['(?i)(admin)'] = 'admincontroller/index';
+//need a new route for the admin dashboard
+$route['(?i)(admin)/(:any)'] = 'admincontroller/$2';
 
 $route['(?i)(register)'] = 'registercontroller/index';
 $route['(?i)(register)/(:any)'] = 'registercontroller/$2';
