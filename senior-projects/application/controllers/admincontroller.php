@@ -127,19 +127,29 @@ class AdminController extends CI_Controller {
 
     //need a fucntion that will retrieve all the users that are currently in the system
     public function activate_deactive_users() {
+        
+        $updates = 0;
         if ($this->input->post('action') === 'Deactivate') {
             if (is_array($this->input->post('users'))) {
                 //retrieve all the ids from the array
                 foreach ($this->input->post('users') as $key => $value) {
                     $this->spw_user_model->change_status_to_inactive($value);
+                    $updates++;
                 }
+                
+                $msg = 'Successfully deactivated ' . $updates . ' user(s)'; 
+                setFlashMessage($this, $msg);
             }
         } else if ($this->input->post('action') === 'Activate') {
             if (is_array($this->input->post('users'))) {
                 //retrieve all the ids from the array
                 foreach ($this->input->post('users') as $key => $value) {
                     $this->spw_user_model->change_status_to_active($value);
+                    $updates++;
                 }
+                
+                $msg = 'Successfully activated ' . $updates . ' user(s)'; 
+                setFlashMessage($this, $msg);
             }
         }
 
