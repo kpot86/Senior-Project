@@ -63,4 +63,26 @@ if ( !function_exists('getCurrentUserHeaderFullName'))
     }
 }
 
+if ( !function_exists('isHeadProfessor'))
+{
+    function isHeadProfessor($sender_controller)
+    {
+        if (is_test($sender_controller))
+        {
+            return true;
+        }
+        else
+        {
+            $CI = get_instance();
+            //load the current user model
+            $CI->load->model('spw_user_model');
+
+            $session_data = $sender_controller->session->userdata('logged_in');
+            $user_id = $session_data['id'];
+            //call the function that determines if the current user is the head professor
+            return $CI->spw_user_model->is_head_professor($user_id);
+        }
+    }
+}
+
 ?>
