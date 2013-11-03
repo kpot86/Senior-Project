@@ -92,6 +92,9 @@
                                 <!-- <?php echo get_nav_item('home', 'Home') ?> -->
                                 <?php echo get_nav_item('past-projects', 'Past Projects') ?>
                                 <?php echo get_nav_item('project', 'My Projects') ?>
+                                <?php if (isHeadProfessor($this)) { ?>
+                                    <?php echo get_nav_item('admin/admin_dashboard', 'Admin Dashboard') ?>
+                                <?php } ?>
                                 <?php echo get_nav_item('about', 'About') ?>
 
                                 <li class="visible-phone visible-tablet <?php echo isActiveNavItem('mobile-search') ? 'dropdown active' : 'dropdown' ?>">
@@ -143,13 +146,7 @@
                                         
                                         <ul class="dropdown-menu" role="menu" aria-labelledby="link-profile">
                                             <li role="presentation">
-                                                <a role="menuitem" tabindex="-1" href="<?php echo base_url().'me' ?>">
-
-                                                    <div>
-                                                        <div class="pull-right"> 
-                                                            <strong><?php echo getCurrentUserHeaderFullName($this)?></strong>
-                                                            <small class="block-text">View Profile</small>                                                
-                                                        </div>
+                                                <a role="menuitem" tabindex="-1" href="<?php echo base_url().'me' ?>">                                               
                                                         <?php 
                                                             $imgSrc = getUserImage($this, getCurrentUserHeaderImg($this));
                                                             if (isset($imgSrc))
@@ -161,7 +158,7 @@
                                                                     ));
                                                             }
                                                         ?>
-                                                    </div>
+                                                    <strong><?php echo getCurrentUserHeaderFullName($this)?></strong>
                                                 </a>                                    
                                             </li>
 
