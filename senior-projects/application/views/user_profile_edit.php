@@ -14,7 +14,13 @@
 
         <?php echo anchor('/user/linkedIn_sync', 'Sync with LinkedIn', array('class' => 'btn btn-primary btn-large pull-right'))  ?>
 
-        <h2>User Details</h2>
+        <?php if(strcmp($userDetails->user->role ,"HEAD") == 0){ ?>
+            <h2>Head Professor Profile</h2>
+        <?php } else if(strcmp($userDetails->user->role ,"STUDENT") == 0){ ?>
+            <h2>Student Profile</h2>
+        <?php } else if (strcmp($userDetails->user->role ,"PROFESSOR") == 0){ ?>
+            <h2>Professor Profile</h2>
+        <?php } ?>
 
         <?php echo form_open('usercontroller/update', array(
             'id' => 'form-update-user'
