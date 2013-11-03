@@ -233,6 +233,7 @@ class SPW_User_Model extends CI_Model
         $query = $this->db
                       ->where('email', $email_address)
                       ->where('hash_pwd', sha1( $pwd))
+                      ->where('status', 'ACTIVE')
                       ->limit(1)
                       ->get('spw_user');
         if($query->num_rows() > 0)
