@@ -24,6 +24,7 @@ class LoginController extends CI_Controller
     public function index()
     {
         $this->load->view('login_index');
+        //test
     }
 
     public function fiu_oauth2()
