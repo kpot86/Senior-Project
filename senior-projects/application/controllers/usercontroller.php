@@ -557,7 +557,9 @@ class UserController extends CI_Controller
         $user->headline_linkedIn = $result->headline_linkedIn;
         $user->summary_linkedIn = $result->summary_linkedIn;
         $user->graduation_term = $result->graduation_term;
-
+        //accessing the new column in the users table that denotes the role in the context of the system
+        $user->role = $result-> role;
+        
         return $user;
     }
 
