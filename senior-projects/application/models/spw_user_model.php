@@ -25,6 +25,10 @@ class SPW_User_Model extends CI_Model
     public $linkedin_id;
     public $facebook_id;
 
+    //added column for role
+    public $role;
+    public $status;
+    
     public function __construct()
     {
         parent::__construct();
@@ -133,7 +137,50 @@ class SPW_User_Model extends CI_Model
             return null; 
         }    
     }
-
+   public function get_role($spw_id)
+   {
+       $query = $this->db 
+                       ->where ('id', $spw_id)
+                       -> select('role')
+                       -> get('spw_user');
+       
+       if($query -> num_rows() > 0)
+            return $query ->row() -> role;
+       else
+           return null;
+       
+   }
+   
+   public function is_head_professor($spw_id)
+   {
+       $query = $this->db 
+                       ->where ('id', $spw_id)
+                       -> select('role')
+                       -> get('spw_user');
+       
+       if($query -> num_rows() > 0)
+       {
+           if($query ->row() -> role == "HEAD")
+               return true;
+       }
+       else
+           return false;
+       
+   }
+    
+   public function change_status_to_inactive($spw_id)
+   {
+        $updateData = array('status' => 'INACTIVE' );
+        $this->db->where('id', $spw_id);
+        $this->db->update('spw_user', $updateData);
+   }
+   
+   public function change_status_to_active($spw_id)
+   {
+        $updateData = array('status' => 'ACTIVE' );
+        $this->db->where('id', $spw_id);
+        $this->db->update('spw_user', $updateData);
+   }
 //    public function get_head_professor()
 //    {
 //        $query = $this->db
@@ -249,6 +296,18 @@ class SPW_User_Model extends CI_Model
         return $this->db->insert_id();
     }
 
+    //a new function to create professor users. This function will be invoked by the head professor
+    public function create_new_professor_user($email_address, $password)
+    {
+        $data = array(
+           'email' =>  $email_address ,
+           'hash_pwd' =>  sha1($password),
+           'role' => 'PROFESSOR',
+        );
+
+        $this->db->insert('spw_user', $data);
+        return $this->db->insert_id();
+    }
     public function is_google_registered($id)
     {
         $query = $this->db
@@ -422,7 +481,7 @@ class SPW_User_Model extends CI_Model
     {
         $query = $this->db
                        ->where('id',$user_id)
-                       ->select('email, first_name, last_name, picture, summary_spw, headline_linkedIn,summary_linkedIn, graduation_term')
+                       ->select('email, first_name, last_name, picture, summary_spw, headline_linkedIn,summary_linkedIn, graduation_term, role')
                        ->get('spw_user');
                    
         if ($query->num_rows() > 0)
@@ -798,78 +857,78 @@ class SPW_User_Model extends CI_Model
     /* return the id of the projects the user belong or false if does not have a project */
     public function userHaveProjects($user_id)
     {
-        $param[0] = $user_id;
-
-        if ($this->isUserAStudent($user_id))
-        {
-            $sql = 'select project
-                    from spw_user, spw_project
-                    where (spw_user.id = ?) and (project = spw_project.id) 
-                           and (spw_project.status <> 4)';
-        }
-//        else
+//        $param[0] = $user_id;
+//
+//        if ($this->isUserAStudent($user_id))
 //        {
 //            $sql = 'select project
-//                    from spw_mentor_project, spw_project
-//                    where (mentor = ?) and (spw_project.id = spw_mentor_project.project) 
+//                    from spw_user, spw_project
+//                    where (spw_user.id = ?) and (project = spw_project.id) 
 //                           and (spw_project.status <> 4)';
 //        }
-
-        $query = $this->db->query($sql, $param);
-
-        if ($query->num_rows() > 0)
-        {
-            //$res = array();
-
-            foreach ($query->result() as $row)
-            {
-                $res[] = $row->project;
-            }
-
-            return $res;
-        }
-        else
-        {
-            return NULL;
-        }
+////        else
+////        {
+////            $sql = 'select project
+////                    from spw_mentor_project, spw_project
+////                    where (mentor = ?) and (spw_project.id = spw_mentor_project.project) 
+////                           and (spw_project.status <> 4)';
+////        }
+//
+//        $query = $this->db->query($sql, $param);
+//
+//        if ($query->num_rows() > 0)
+//        {
+//            //$res = array();
+//
+//            foreach ($query->result() as $row)
+//            {
+//                $res[] = $row->project;
+//            }
+//
+//            return $res;
+//        }
+//        else
+//        {
+//            return NULL;
+//        }
     }
 
     /* return the id of the projects the user belong or false if does not have a project 
        regardless of the project statuses */
     public function userHaveProjectsRegardlessStatus($user_id)
     {
-        $param[0] = $user_id;
-
-        if ($this->isUserAStudent($user_id))
-        {
-            $sql = 'select project
-                    from spw_user, spw_project
-                    where (spw_user.id = ?) and (project = spw_project.id)';
-        }
-//        else
+//        $param[0] = $user_id;
+//
+//        if ($this->isUserAStudent($user_id))
 //        {
 //            $sql = 'select project
-//                    from spw_mentor_project, spw_project
-//                    where (mentor = ?) and (spw_project.id = spw_mentor_project.project)';
+//                    from spw_user, spw_project
+//                    where (spw_user.id = ?) and (project = spw_project.id)';
 //        }
-
-        $query = $this->db->query($sql, $param);
-
-        if ($query->num_rows() > 0)
-        {
-            //$res = array();
-
-            foreach ($query->result() as $row)
-            {
-                $res[] = $row->project;
-            }
-
-            return $res;
-        }
-        else
-        {
-            return NULL;
-        }
+////        else
+////        {
+////            $sql = 'select project
+////                    from spw_mentor_project, spw_project
+////                    where (mentor = ?) and (spw_project.id = spw_mentor_project.project)';
+////        }
+//
+//        $query = $this->db->query($sql, $param);
+//
+//        if ($query->num_rows() > 0)
+//        {
+//            //$res = array();
+//
+//            foreach ($query->result() as $row)
+//            {
+//                $res[] = $row->project;
+//            }
+//
+//            return $res;
+//        }
+//        else
+//        {
+//            return NULL;
+//        }
     }
 
     /* given the full list of Ids with at least one match, determines which can
