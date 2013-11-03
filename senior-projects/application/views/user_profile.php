@@ -51,18 +51,7 @@
                     }
                 ?>
 
-                <p>
-                    <?php echo $userDetails->role->name ?>
-
-                    <?php 
-                        if (isset($userDetails->user->graduation_term) &&
-                            isset($userDetails->user->graduation_term->name) && 
-                            strlen($userDetails->user->graduation_term->name) > 0) {
-                    ?>
-                        Graduating In
-                        <?php echo $userDetails->user->graduation_term->name ?>
-                    <?php } ?>
-                </p>
+                
             </div>
         </div>
 
